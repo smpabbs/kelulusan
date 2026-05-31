@@ -596,6 +596,7 @@ function renderSKL(student, nomorUrut = 1) {
                         <div>Kepala SMP ABBS Surakarta</div>
                         <div style="height:28pt;"></div>
                         <div><strong><u>TRI WIJAYANTI, M.Pd</u></strong></div>
+                        <div>NIP. -</div>
                     </div>
                 </div>
             </div>
