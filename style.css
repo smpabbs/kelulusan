@@ -1,0 +1,1644 @@
+/* ============================================================
+   FILE: style.css
+   DESKRIPSI: Semua styling untuk Portal Kelulusan & TKA
+   TEMA: Hijau Institusional (Redesign B)
+   ============================================================ */
+
+/* ==================== FONT & VARIABLES ==================== */
+@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #E9F0ED;
+    --ink: #0B2E2A;
+    --green: #14776B;
+    --deep: #0B2E2A;
+    --gold: #BE9D52;
+    --gold2: #D2B775;
+    --paper: #FFFFFF;
+    --line: #DCE7E2;
+    --muted: #688A82;
+}
+
+/* ==================== RESET & GLOBAL ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    min-height: 100vh;
+    color: var(--ink);
+}
+
+/* ==================== LOGIN SECTION ==================== */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #0A2E2A 0%, #1A7A72 55%, #0D4840 100%);
+    padding: 32px 20px;
+}
+
+.login-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 860px;
+    min-height: 520px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+
+/* Panel Kiri - Informasi Sekolah */
+.login-info-panel {
+    flex: 1;
+    background: rgba(10,46,42,0.88);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 44px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    color: white;
+    backdrop-filter: blur(6px);
+}
+
+.lip-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.lip-logo {
+    width: 62px;
+    height: 62px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.lip-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.65);
+}
+
+.lip-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+}
+
+.lip-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.lip-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.lip-year {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gold);
+    background: rgba(190,157,82,0.14);
+    border: 1px solid rgba(190,157,82,0.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.lip-desc {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+}
+
+.lip-notice {
+    display: flex;
+    gap: 10px;
+    background: rgba(190,157,82,0.12);
+    border: 1px solid rgba(190,157,82,0.25);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.78);
+    margin-top: auto;
+}
+
+.lip-notice strong {
+    color: var(--gold);
+}
+
+/* Panel Kanan - Form Login */
+.login-card {
+    flex: 0 0 340px;
+    background: white;
+    padding: 44px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+/* ==================== COUNTDOWN ==================== */
+#countdownPanel {
+    margin: 20px 0 8px;
+    text-align: center;
+}
+
+.countdown-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+}
+
+.countdown-date {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 20px;
+}
+
+.countdown-boxes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 18px;
+}
+
+.countdown-box {
+    background: linear-gradient(160deg, #0B2E2A 0%, #14776B 100%);
+    border-radius: 10px;
+    width: 58px;
+    padding: 10px 4px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.countdown-box span {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Plus Jakarta Sans', monospace;
+}
+
+.countdown-box small {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.countdown-sep {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 14px;
+    line-height: 1;
+}
+
+.countdown-notice {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+}
+
+.login-card h1 {
+    font-size: 1.45rem;
+    color: var(--deep);
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.login-subtitle {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 7px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #f8fbfa;
+    transition: all 0.25s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(190,157,82,0.15);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--deep) 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+.btn-login:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(11,46,42,0.3);
+}
+
+.error-msg {
+    background: #FEF2F2;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+    padding: 11px 14px;
+    border-radius: 10px;
+    margin-top: 14px;
+    font-size: 0.82rem;
+    display: none;
+}
+
+.loading-status {
+    font-size: 0.73rem;
+    color: var(--muted);
+    margin-top: 12px;
+}
+
+/* Responsive Login */
+@media (max-width: 680px) {
+    .login-wrapper {
+        flex-direction: column;
+        max-width: 420px;
+    }
+    .login-card {
+        flex: none;
+        padding: 36px 28px;
+    }
+    .login-info-panel {
+        padding: 28px 24px;
+    }
+}
+
+/* ==================== DASHBOARD HEADER ==================== */
+.dashboard-container {
+    display: none;
+    background: var(--bg);
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, var(--deep) 0%, #1A6B5E 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-brand-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(190,157,82,0.15);
+    border: 1.5px solid rgba(190,157,82,0.4);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Amiri', serif;
+    font-size: 1.15rem;
+    color: var(--gold);
+}
+
+.header-brand-portal {
+    font-size: 0.63rem;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.header-brand-school {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.header-user-info {
+    text-align: right;
+}
+
+.header-user-name {
+    font-size: 0.87rem;
+    font-weight: 600;
+    color: white;
+}
+
+.header-user-meta {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 2px;
+}
+
+.logout-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.88);
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.77rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+/* ==================== DASHBOODY BODY ==================== */
+.dashboard-body {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 28px 24px 40px;
+}
+
+/* ==================== TAB NAVIGATION ==================== */
+.tab-nav {
+    background: white;
+    display: flex;
+    padding: 0 24px;
+    border-bottom: 2px solid var(--line);
+    position: sticky;
+    top: 64px;
+    z-index: 100;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 15px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.83rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: -2px;
+}
+
+.tab-btn:hover {
+    color: var(--green);
+}
+
+.tab-btn.active {
+    color: var(--deep);
+    border-bottom-color: var(--gold);
+}
+
+.tab-btn.tab-locked {
+    color: #c0392b;
+    opacity: 0.75;
+}
+.tab-btn.tab-locked:hover {
+    color: #c0392b;
+    opacity: 1;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.25s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== SISWA HEADER (BERANDA) ==================== */
+.student-header {
+    background: linear-gradient(135deg, var(--deep) 0%, var(--green) 100%);
+    border-radius: 16px;
+    padding: 26px 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 24px rgba(11,46,42,0.2);
+}
+
+.student-header-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.student-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(190,157,82,0.18);
+    border: 2px solid rgba(190,157,82,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.student-info-main {
+    flex: 1;
+}
+
+.student-greeting {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.58);
+    margin-bottom: 3px;
+}
+
+.student-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 3px;
+}
+
+.student-header p {
+    font-size: 0.81rem;
+    color: rgba(255,255,255,0.65);
+}
+
+/* ==================== BERANDA IDENTITY CARD ==================== */
+.beranda-id-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.beranda-id-header {
+    background: linear-gradient(135deg, var(--deep) 0%, var(--green) 100%);
+    padding: 22px 28px;
+}
+
+.beranda-greeting {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.58);
+    margin-bottom: 4px;
+}
+
+.beranda-id-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+.beranda-id-body {
+    padding: 20px 28px 18px;
+}
+
+.beranda-id-body .tbl-bio {
+    font-size: 0.9rem;
+}
+
+.beranda-id-body .tbl-bio td {
+    padding: 4px 0;
+    color: #2a4a48;
+}
+
+/* ==================== WELCOME CARD ==================== */
+.welcome-card {
+    background: white;
+    border-radius: 16px;
+    padding: 36px 32px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.welcome-icon {
+    font-size: 2.6rem;
+    margin-bottom: 14px;
+}
+
+.welcome-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--deep);
+    margin-bottom: 8px;
+}
+
+.welcome-card > p {
+    color: var(--muted);
+    font-size: 0.87rem;
+    margin: 0 auto 24px;
+    line-height: 1.85;
+}
+
+.welcome-nav-hints {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.nav-hint {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: var(--ink);
+}
+
+.doc-notice {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--gold);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.81rem;
+    color: var(--ink);
+    margin-bottom: 16px;
+}
+
+.tab-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.tab-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--deep);
+}
+
+.print-btn {
+    background: linear-gradient(135deg, var(--gold) 0%, #AD8A3A 100%);
+    color: white;
+    padding: 9px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.83rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 3px 10px rgba(173,138,58,0.3);
+    transition: all 0.2s;
+}
+
+.print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(173,138,58,0.4);
+}
+
+/* ==================== SKN A4 PAGE ==================== */
+.preview-area {
+    background: var(--line);
+    padding: 32px 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 14px;
+    overflow-x: auto;
+}
+
+.a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+    color: #000;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    margin: 0 auto;
+}
+
+.kop {
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+}
+
+.kop img {
+    width: 90px;
+    margin-right: 15px;
+}
+
+.kop-text {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.kop-text h3 {
+    margin: 0;
+    font-size: 11pt;
+    font-weight: normal;
+}
+
+.kop-text h1 {
+    margin: 2px 0;
+    font-size: 16pt;
+}
+
+.kop-text p {
+    margin: 2px 0;
+    font-size: 10pt;
+}
+
+.line-bold {
+    border-top: 3px solid #000;
+    border-bottom: 1px solid #000;
+    height: 3px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 13pt;
+    text-decoration: underline;
+    margin-bottom: 2px;
+}
+
+.nomor {
+    text-align: center;
+    font-size: 11pt;
+    margin-bottom: 12px;
+}
+
+.tbl-bio {
+    width: 100%;
+    font-size: 11pt;
+    margin-bottom: 10px;
+}
+
+.tbl-bio td {
+    padding: 2px 0;
+    vertical-align: top;
+}
+
+.tbl-nilai {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.tbl-nilai th,
+.tbl-nilai td {
+    border: 1px solid #000;
+    padding: 6px 4px;
+}
+
+.tbl-nilai th {
+    background: #f2f2f2;
+    font-weight: bold;
+}
+
+.nilai-kosong {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.catatan-kaki {
+    font-size: 9pt;
+    color: #666;
+    font-style: italic;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+.text-left {
+    text-align: left;
+    padding-left: 8px !important;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 11pt;
+    margin-top: 20px;
+}
+
+.ttd-box {
+    width: 220px;
+    text-align: left;
+}
+
+.ttd-gap {
+    height: 55px;
+}
+
+/* ==================== SKL PAGE ==================== */
+.skl-page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    box-sizing: border-box;
+    margin: 0 auto;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+}
+
+#sklContent {
+    background: var(--line);
+    border-radius: 14px;
+    padding: 32px 20px;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+/* ==================== TKA STYLES ==================== */
+/* TKA Score Cards */
+/* TKA Letter Header (Surat) */
+.tka-letter-header {
+    background: white;
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border-left: 4px solid var(--gold);
+}
+
+.tka-letter-title {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.tka-letter-title h3 {
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.tka-letter-title h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--deep);
+    margin-bottom: 4px;
+}
+
+.tka-letter-title p {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.tka-letter-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--green), var(--gold), transparent);
+    margin: 16px 0 20px 0;
+}
+
+.tka-letter-content p {
+    font-size: 0.85rem;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    text-align: justify;
+}
+
+.tka-info-table {
+    width: 100%;
+    margin: 16px 0;
+    border-collapse: collapse;
+}
+
+.tka-info-table td {
+    padding: 8px 4px;
+    font-size: 0.9rem;
+    color: var(--ink);
+    vertical-align: top;
+}
+
+.tka-info-label {
+    width: 200px;
+    font-weight: 600;
+    color: var(--deep);
+}
+
+.tka-info-value {
+    font-weight: 500;
+}
+
+/* Responsive TKA Header */
+@media (max-width: 550px) {
+    .tka-letter-header {
+        padding: 20px 16px;
+    }
+    
+    .tka-letter-title h1 {
+        font-size: 1.1rem;
+    }
+    
+    .tka-letter-title h3 {
+        font-size: 0.7rem;
+    }
+    
+    .tka-letter-content p {
+        font-size: 0.75rem;
+    }
+    
+    .tka-info-label {
+        width: 140px;
+        font-size: 0.8rem;
+    }
+    
+    .tka-info-value {
+        font-size: 0.8rem;
+    }
+}
+.tka-scores-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.tka-score-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+}
+
+.tka-score-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.tka-score-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--bg);
+}
+
+.tka-score-icon {
+    font-size: 2rem;
+}
+
+.tka-score-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--deep);
+}
+
+.tka-nilai-angka {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--deep);
+    margin: 16px 0;
+    text-align: center;
+}
+
+.tka-progress-container {
+    background: var(--line);
+    border-radius: 12px;
+    height: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+}
+
+.tka-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 12px;
+    transition: width 0.4s ease;
+}
+
+.tka-progress-fill.math {
+    background: linear-gradient(90deg, var(--green), var(--deep));
+}
+
+.tka-progress-fill.bindo {
+    background: linear-gradient(90deg, var(--gold), #AD8A3A);
+}
+
+.tka-kategori-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.tka-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.tka-kategori-badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* Kategori Colors */
+.kategori-istimewa {
+    background: #f3e8ff;
+    color: #9333ea;
+}
+
+.kategori-baik {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.kategori-memadai {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+.kategori-kurang {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.kategori-default {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* TKA Comparison Table */
+.tka-comparison-table-wrapper {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    overflow-x: auto;
+}
+
+.tka-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+}
+
+.tka-comparison-table th {
+    text-align: center;
+    padding: 14px 12px;
+    background: var(--bg);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--ink);
+    border-bottom: 2px solid var(--line);
+}
+
+.tka-comparison-table td {
+    padding: 14px 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--bg);
+    font-size: 0.9rem;
+}
+
+.tka-comparison-table .mapel-cell {
+    font-weight: 700;
+    color: var(--deep);
+    text-align: left;
+    background: #fefef8;
+}
+
+/* TKA Kategori Distribution */
+.tka-kategori-stats {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.tka-kategori-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tka-kategori-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.tka-kategori-name {
+    min-width: 135px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.tka-kategori-bar-container {
+    flex: 1;
+    background: var(--line);
+    border-radius: 20px;
+    height: 32px;
+    overflow: hidden;
+}
+
+.tka-kategori-bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+}
+
+/* Bar Colors */
+.bar-istimewa {
+    background: #9333ea;
+}
+
+.bar-baik {
+    background: #166534;
+}
+
+.bar-memadai {
+    background: #854d0e;
+}
+
+.bar-kurang {
+    background: #991b1b;
+}
+
+.tka-kategori-count {
+    min-width: 50px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: right;
+    color: var(--deep);
+}
+
+.tka-kategori-percent {
+    min-width: 70px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: left;
+}
+
+/* TKA Quotes */
+.tka-quotes-section {
+    background: linear-gradient(135deg, var(--deep) 0%, var(--green) 100%);
+    border-radius: 20px;
+    padding: 28px 32px;
+    text-align: center;
+}
+
+.tka-quotes-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.tka-quotes-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.tka-quotes-text {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.9);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.tka-quotes-source {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 12px;
+}
+
+/* ==================== LOADING OVERLAY ==================== */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    display: none;
+}
+
+.loading-spinner {
+    background: white;
+    padding: 28px 36px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--line);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==================== ERROR TOAST ==================== */
+.error-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #dc2626;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 1001;
+    display: none;
+    max-width: 320px;
+}
+
+/* Bagian TKA yang hanya tampil di layar, tidak ikut cetak */
+.tka-screen-only {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+    
+    .dashboard-header,
+    .tab-nav,
+    .tab-toolbar,
+    .doc-notice,
+    .print-btn,
+    .logout-btn,
+    .tka-screen-only {
+        display: none !important;
+    }
+    
+    .dashboard-body {
+        padding: 0 !important;
+        max-width: none !important;
+        margin: 0 !important;
+    }
+    
+    .preview-area {
+        background: transparent !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+    
+    #sklContent {
+        background: transparent !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+    
+    .a4-page,
+    .skl-page {
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+}
+
+/* ==================== RESPONSIVE STYLES ==================== */
+@media (max-width: 550px) {
+    .dashboard-body {
+        padding: 16px 12px;
+    }
+    
+    .letter-header {
+        padding: 20px 16px;
+    }
+    
+    .letter-title h1 {
+        font-size: 1.1rem;
+    }
+    
+    .tka-kategori-name {
+        min-width: 110px;
+        font-size: 0.7rem;
+    }
+    
+    .tka-kategori-bar-container {
+        height: 28px;
+    }
+    
+    .tka-kategori-bar {
+        font-size: 0.65rem;
+        padding-right: 8px;
+    }
+    
+    .tka-kategori-count {
+        font-size: 0.8rem;
+    }
+    
+    .tka-kategori-percent {
+        font-size: 0.7rem;
+        min-width: 60px;
+    }
+    
+    .tka-quotes-section {
+        padding: 20px 16px;
+    }
+    
+    .tka-quotes-arabic {
+        font-size: 1rem;
+    }
+    
+    .tka-quotes-text {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tka-kategori-row {
+        gap: 8px;
+    }
+
+    .tka-kategori-name {
+        min-width: 95px;
+        font-size: 0.65rem;
+    }
+
+    .tka-kategori-bar-container {
+        height: 24px;
+    }
+
+    .tka-kategori-bar {
+        font-size: 0.6rem;
+    }
+}
+
+/* ==================== ADMIN PANEL ==================== */
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.admin-filter label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--deep);
+}
+
+.admin-filter select {
+    padding: 8px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.84rem;
+    color: var(--deep);
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.admin-filter select:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+.admin-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.87rem;
+    min-width: 500px;
+}
+
+.admin-table thead th {
+    background: var(--deep);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.81rem;
+    letter-spacing: 0.3px;
+}
+
+.admin-table tbody tr {
+    transition: background 0.15s;
+}
+
+.admin-table tbody tr:hover {
+    background: var(--bg);
+}
+
+.admin-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--bg);
+    color: #2a4a46;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-action-btn {
+    background: transparent;
+    border: 1.5px solid;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    transition: all 0.18s;
+    margin-right: 4px;
+}
+
+.admin-action-btn.btn-skn { color: var(--green); border-color: var(--green); }
+.admin-action-btn.btn-skn:hover { background: var(--green); color: white; }
+.admin-action-btn.btn-skl { color: #B08838; border-color: var(--gold); }
+.admin-action-btn.btn-skl:hover { background: var(--gold); color: white; }
+.admin-action-btn.btn-tka { color: #7c3aed; border-color: #7c3aed; }
+.admin-action-btn.btn-tka:hover { background: #7c3aed; color: white; }
+
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.admin-stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.admin-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--deep);
+}
+
+.admin-stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+.kategori-badge-small {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+/* ==================== ADMIN NAVIGATOR ==================== */
+.admin-nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-nav-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--deep);
+}
+
+.admin-nav-filter select {
+    padding: 6px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.83rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.admin-nav-filter select:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+.admin-nav-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.admin-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-nav-btn {
+    background: var(--deep);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.admin-nav-btn:hover:not(:disabled) {
+    background: var(--green);
+}
+
+.admin-nav-btn:disabled {
+    background: var(--line);
+    color: #a0bcb8;
+    cursor: not-allowed;
+}
+
+.admin-nav-info {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--deep);
+    min-width: 170px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 680px) {
+    .admin-nav-bar { flex-direction: column; align-items: flex-start; }
+    .admin-nav-controls { width: 100%; justify-content: space-between; }
+    .admin-nav-info { min-width: 0; flex: 1; text-align: center; }
+}
+
+/* Print: admin single doc */
+@media print {
+    #adminSection .dashboard-header,
+    #adminSection .tab-nav,
+    #adminSection .tab-toolbar,
+    #adminSection .admin-nav-bar,
+    #adminSection .doc-notice,
+    #adminSection .admin-toolbar,
+    #adminSection .admin-tka-overview,
+    #adminSection #adminTabDaftar { display: none !important; }
+
+    #adminSection .tab-content:not(.active) { display: none !important; }
+    #adminSection .dashboard-body { padding: 0 !important; margin: 0 !important; }
+
+    #adminSknContent {
+        background: transparent !important; padding: 0 !important;
+        border-radius: 0 !important; display: block !important;
+    }
+    #adminSklContent {
+        background: transparent !important; padding: 0 !important;
+        border-radius: 0 !important; display: block !important;
+        justify-content: unset !important;
+    }
+    #adminTkaContent {
+        background: transparent !important; padding: 0 !important;
+        border-radius: 0 !important; display: block !important;
+    }
+
+    /* Print: batch admin */
+    body[data-print-mode="admin-batch"] #adminSection,
+    body[data-print-mode="admin-batch"] #dashboardSection,
+    body[data-print-mode="admin-batch"] #loginSection { display: none !important; }
+    body[data-print-mode="admin-batch"] #adminPrintBatch { display: block !important; }
+
+    /* Hapus min-height saat batch agar tidak ada halaman kosong */
+    body[data-print-mode="admin-batch"] .a4-page,
+    body[data-print-mode="admin-batch"] .skl-page {
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
+    .batch-page { page-break-after: always; }
+    .batch-page:last-child { page-break-after: auto; }
+}

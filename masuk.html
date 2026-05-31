@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - SMP ABBS</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co.com/yFn890yV/logo-smpabbs.png">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0D3B36;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-wrap img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .logo-wrap .school-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0D3B36;
+            line-height: 1.35;
+        }
+
+        .logo-wrap .school-sub {
+            font-size: 0.72rem;
+            color: #6a9490;
+            font-weight: 400;
+        }
+
+        h1 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0D3B36;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 0.82rem;
+            color: #6a9490;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #2a5a52;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #c8dbd8;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-family: inherit;
+            color: #0D3B36;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #147A73;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            background: #147A73;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: #0D3B36; }
+        .btn:disabled { background: #8ab5ae; cursor: not-allowed; }
+
+        .error-msg {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: #fff0f0;
+            border: 1px solid #f5c2c2;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            color: #c0392b;
+            display: none;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.78rem;
+            color: #8ab5ae;
+            text-decoration: none;
+        }
+
+        .back-link:hover { color: #147A73; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="logo-wrap">
+        <img src="https://i.ibb.co.com/yFn890yV/logo-smpabbs.png" alt="Logo">
+        <div>
+            <div class="school-name">SMP ABBS SURAKARTA</div>
+            <div class="school-sub">Yayasan Al Abidin Surakarta</div>
+        </div>
+    </div>
+
+    <h1>Login Admin</h1>
+    <p class="subtitle">Panel Pengelola Portal Kelulusan</p>
+
+    <form id="adminLoginForm">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="emailInput" placeholder="admin@..." required autocomplete="username">
+        </div>
+        <div class="form-group">
+            <label>Kata Sandi</label>
+            <input type="password" id="passInput" placeholder="Masukkan password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn" id="loginBtn">Masuk</button>
+        <div class="error-msg" id="errorMsg"></div>
+    </form>
+
+    <a href="index.html" class="back-link">← Kembali ke portal siswa</a>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://drlsnhnqxkcgcuskswwx.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybHNuaG5xeGtjZ2N1c2tzd3d4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyNTI5NDMsImV4cCI6MjA4NzgyODk0M30.IbnoYC02FUwMsCbdwb5bPFEjnMvkVc2NGwfrWwR8BQs';
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Kalau sudah ada sesi admin, langsung redirect
+    client.auth.getSession().then(({ data: { session } }) => {
+        if (session && !session.user.email.match(/^nis\d+@/)) {
+            window.location.href = 'index.html';
+        }
+    });
+
+    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('emailInput').value.trim();
+        const pass  = document.getElementById('passInput').value;
+        const btn   = document.getElementById('loginBtn');
+        const err   = document.getElementById('errorMsg');
+
+        err.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Memproses...';
+
+        const { data, error } = await client.auth.signInWithPassword({ email, password: pass });
+
+        btn.disabled = false;
+        btn.textContent = 'Masuk';
+
+        if (error || !data.user) {
+            err.textContent = 'Email atau kata sandi salah.';
+            err.style.display = 'block';
+            return;
+        }
+
+        // Tolak jika yang login adalah akun siswa (format nis...)
+        if (data.user.email.match(/^nis\d+@/)) {
+            await client.auth.signOut();
+            err.textContent = 'Halaman ini hanya untuk admin.';
+            err.style.display = 'block';
+            return;
+        }
+
+        window.location.href = 'index.html';
+    });
+</script>
+
+</body>
+</html>

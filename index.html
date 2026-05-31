@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Portal Kelulusan & TKA - SMP ABBS</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co.com/yFn890yV/logo-smpabbs.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- CSS External -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Sembunyikan loginSection jika ada session aktif, sebelum halaman render -->
+    <script>
+    try {
+        if (localStorage.getItem('sb-drlsnhnqxkcgcuskswwx-auth-token')) {
+            document.documentElement.classList.add('has-session');
+        }
+    } catch(e) {}
+    </script>
+    <style>
+    html.has-session #loginSection  { display: none !important; }
+    html.has-session #loadingOverlay { display: flex !important; }
+    </style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SECTION ==================== -->
+<div id="loginSection" class="login-container">
+    <div class="login-wrapper">
+        
+        <!-- Panel Kiri: Informasi Sekolah -->
+        <div class="login-info-panel">
+            <div class="lip-header">
+                <img src="https://i.ibb.co.com/yFn890yV/logo-smpabbs.png" alt="Logo SMP ABBS" class="lip-logo">
+                <div>
+                    <div class="lip-arabic">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
+                    <div class="lip-name">SMP ABBS SURAKARTA</div>
+                    <div class="lip-sub">Yayasan Al Abidin Surakarta</div>
+                </div>
+            </div>
+            <div>
+                <h2 class="lip-title">Portal Kelulusan</h2>
+                <div class="lip-year">Tahun Pelajaran 2025 / 2026</div>
+                <p class="lip-desc">Akses dokumen kelulusan resmi Anda secara digital — kapan saja dan di mana saja.</p>
+                <div class="lip-notice" style="margin-top:16px;">
+                    <span>📊</span>
+                    <p>Portal ini menyediakan akses ke <strong>SKN</strong>, <strong>SKL</strong>, dan <strong>Hasil TKA</strong>.</p>
+                </div>
+            </div>
+            <div class="lip-notice">
+                <span>💬</span>
+                <p>Untuk pengambilan <strong>dokumen cetak</strong>, silakan menghubungi <strong>wali kelas</strong> masing-masing.</p>
+            </div>
+        </div>
+        
+        <!-- Panel Kanan: Form Login -->
+        <div class="login-card">
+            <h1>Masuk ke Portal</h1>
+            <p class="login-subtitle">NIS (siswa) atau email admin</p>
+
+            <!-- Countdown — tampil sebelum 2 Juni 2026 pukul 13.00 WIB -->
+            <div id="countdownPanel">
+                <div class="countdown-label">Portal akan dibuka pada</div>
+                <div class="countdown-date">Selasa, 2 Juni 2026 &mdash; pukul 13.00 WIB</div>
+                <div class="countdown-boxes">
+                    <div class="countdown-box"><span id="cdHari">00</span><small>Hari</small></div>
+                    <div class="countdown-sep">:</div>
+                    <div class="countdown-box"><span id="cdJam">00</span><small>Jam</small></div>
+                    <div class="countdown-sep">:</div>
+                    <div class="countdown-box"><span id="cdMenit">00</span><small>Menit</small></div>
+                    <div class="countdown-sep">:</div>
+                    <div class="countdown-box"><span id="cdDetik">00</span><small>Detik</small></div>
+                </div>
+                <div class="countdown-notice">Mohon bersabar — pengumuman segera hadir.</div>
+            </div>
+
+            <form id="loginForm" style="display:none;">
+                <div class="form-group">
+                    <label>NIS / Email Admin</label>
+                    <input type="text" id="nisInput" placeholder="Contoh: 008 atau admin@..." required>
+                </div>
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" id="passwordInput" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn">Masuk</button>
+                <div id="loginError" class="error-msg"></div>
+                <div class="loading-status" id="dataStatus">⏳ Menyiapkan data...</div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+
+<!-- ==================== DASHBOARD SECTION (Setelah Login) ==================== -->
+<div id="dashboardSection" class="dashboard-container">
+    
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-brand">
+            <div class="header-brand-icon">م</div>
+            <div>
+                <div class="header-brand-portal">Portal Kelulusan</div>
+                <div class="header-brand-school">SMP ABBS Surakarta</div>
+            </div>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <div class="header-user-name" id="headerNama">—</div>
+                <div class="header-user-meta" id="headerInfo">—</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Keluar</button>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="beranda">🏠 Beranda</button>
+        <button class="tab-btn" data-tab="skn">📄 SKN</button>
+        <button class="tab-btn" data-tab="skl">📜 SKL</button>
+        <button class="tab-btn" data-tab="tka">📊 Hasil TKA</button>
+    </div>
+
+    <!-- Main Content -->
+    <main class="dashboard-body">
+        
+        <!-- ==================== TAB BERANDA ==================== -->
+        <div id="tabBeranda" class="tab-content active">
+            <div id="tagihanWarningBanner" style="display:none; background:#fff3cd; border:1px solid #ffc107; border-left:4px solid #e67e22; border-radius:8px; padding:16px 20px; margin:0 0 16px; color:#6d4c00;">
+                <strong>⚠️ Perhatian — Administrasi Keuangan</strong><br>
+                <span style="font-size:0.9rem;">Mohon perhatian — masih terdapat administrasi keuangan yang perlu diselesaikan. SKN dan SKL akan dapat diakses setelah proses administrasi selesai. Silakan koordinasikan dengan bagian <strong>keuangan sekolah</strong>. Terima kasih atas pengertian Ananda. 🙏</span>
+            </div>
+
+            <!-- Kartu Identitas Siswa -->
+            <div class="beranda-id-card">
+                <div class="beranda-id-header">
+                    <span class="beranda-greeting">Assalamu'alaikum,</span>
+                    <h2 id="displayNama">Siswa</h2>
+                </div>
+                <div class="beranda-id-body">
+                    <table class="tbl-bio">
+                        <tr><td width="36%">Nama Lengkap</td><td width="2%">:</td><td><strong id="biNama">-</strong></td></tr>
+                        <tr><td>NIS</td><td>:</td><td id="biNis">-</td></tr>
+                        <tr><td>Nomor Induk Siswa Nasional</td><td>:</td><td id="biNisn">-</td></tr>
+                        <tr><td>Kelas</td><td>:</td><td id="biKelas">-</td></tr>
+                        <tr><td>Tempat, Tanggal Lahir</td><td>:</td><td id="biTtl">-</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pesan Selamat -->
+            <div class="welcome-card">
+                <div class="welcome-icon">🎓</div>
+                <h3>Bārakallāhu fīk, Ananda dinyatakan <span style="color:#147A73;">LULUS</span></h3>
+                <p style="font-size:0.95rem; line-height:1.85; color:#2a5a52; margin:0 auto 20px;">
+                    Jadikanlah perjalanan belajar selama tiga tahun ini sebagai bekal yang bermakna.<br>
+                    Ambil hikmah dari setiap episode kehidupan yang telah Ananda lalui di sini.<br><br>
+                    Gapailah mimpi-mimpimu, luruskan niatmu, dan berjalanlah dengan keimanan serta keilmuan yang kuat.<br>
+                    <em>Semoga Allah meridhoi setiap langkahmu.</em>
+                </p>
+                <div class="welcome-nav-hints">
+                    <div class="nav-hint"><span>📄</span><span>Tab <strong>SKN</strong> — Surat Keterangan Nilai</span></div>
+                    <div class="nav-hint"><span>📜</span><span>Tab <strong>SKL</strong> — Surat Keterangan Lulus</span></div>
+                    <div class="nav-hint"><span>📊</span><span>Tab <strong>Hasil TKA</strong> — Tes Kemampuan Akademik</span></div>
+                </div>
+                <div class="doc-notice" style="margin-top:20px; text-align:left;">
+                    📋 Dokumen cetak dapat diambil dengan konfirmasi kepada wali kelas dan hadir sesuai jadwal berikut:<br>
+                    &bull; <strong>Selasa, 3 Juni 2026</strong> &rarr; pukul 14.00&ndash;15.30<br>
+                    &bull; <strong>Rabu, 4 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30<br>
+                    &bull; <strong>Kamis, 5 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB SKN (Surat Keterangan Nilai) ==================== -->
+        <div id="tabSkn" class="tab-content">
+            <div class="tab-toolbar">
+                <h2 class="tab-title">Surat Keterangan Nilai (SKN)</h2>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+            </div>
+            <div class="doc-notice">📋 Dokumen cetak dapat diambil dengan konfirmasi kepada wali kelas dan hadir sesuai jadwal berikut:<br>&bull; <strong>Selasa, 3 Juni 2026</strong> &rarr; pukul 14.00&ndash;15.30 &nbsp;|&nbsp; <strong>Rabu, 4 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30 &nbsp;|&nbsp; <strong>Kamis, 5 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30</div>
+            <div class="preview-area" id="previewArea">
+                <div class="a4-page" style="text-align:center; padding:50px;">Memuat data...</div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB SKL (Surat Keterangan Lulus) ==================== -->
+        <div id="tabSkl" class="tab-content">
+            <div class="tab-toolbar">
+                <h2 class="tab-title">Surat Keterangan Lulus (SKL)</h2>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+            </div>
+            <div class="doc-notice">📋 Dokumen cetak dapat diambil dengan konfirmasi kepada wali kelas dan hadir sesuai jadwal berikut:<br>&bull; <strong>Selasa, 3 Juni 2026</strong> &rarr; pukul 14.00&ndash;15.30 &nbsp;|&nbsp; <strong>Rabu, 4 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30 &nbsp;|&nbsp; <strong>Kamis, 5 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30</div>
+            <div id="sklContent">
+                <div style="text-align:center; padding:40px; color:#6a9490;">Memuat data...</div>
+            </div>
+        </div>
+
+<!-- ==================== TAB TKA (Tes Kemampuan Akademik) ==================== -->
+<div id="tabTka" class="tab-content">
+
+    <!-- Toolbar -->
+    <div class="tab-toolbar">
+        <h2 class="tab-title">Hasil Tes Kemampuan Akademik (TKA)</h2>
+        <button class="print-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+    </div>
+    <div class="doc-notice">💬 Untuk pengambilan <strong>dokumen cetak</strong>, silakan menghubungi <strong>wali kelas</strong> masing-masing.</div>
+
+    <!-- Dokumen Formal A4 (ikut tercetak) -->
+    <div class="preview-area" id="tkaDocArea">
+        <div id="tkaDocContent">
+            <div class="a4-page" style="text-align:center; padding:50px; font-family:'Times New Roman', serif;">Memuat data...</div>
+        </div>
+    </div>
+
+    <!-- ===== BAGIAN BAWAH: tidak ikut tercetak ===== -->
+    <div class="tka-screen-only">
+
+        <!-- Distribusi Kategori -->
+        <div class="tka-kategori-stats">
+            <div class="tab-title" style="margin-bottom:16px;">📊 Distribusi Capaian Kategori (Seluruh Siswa)</div>
+            <div class="tka-kategori-bars">
+                <div class="tka-kategori-row">
+                    <span class="tka-kategori-name">🌟 Baik - Istimewa</span>
+                    <div class="tka-kategori-bar-container"><div id="tkaBarIstimewa" class="tka-kategori-bar bar-istimewa" style="width:0%">0%</div></div>
+                    <span class="tka-kategori-count" id="tkaCountIstimewa">0</span>
+                    <span class="tka-kategori-percent" id="tkaPercentIstimewa">(0%)</span>
+                </div>
+                <div class="tka-kategori-row">
+                    <span class="tka-kategori-name">✅ Baik</span>
+                    <div class="tka-kategori-bar-container"><div id="tkaBarBaik" class="tka-kategori-bar bar-baik" style="width:0%">0%</div></div>
+                    <span class="tka-kategori-count" id="tkaCountBaik">0</span>
+                    <span class="tka-kategori-percent" id="tkaPercentBaik">(0%)</span>
+                </div>
+                <div class="tka-kategori-row">
+                    <span class="tka-kategori-name">⚠️ Memadai</span>
+                    <div class="tka-kategori-bar-container"><div id="tkaBarMemadai" class="tka-kategori-bar bar-memadai" style="width:0%">0%</div></div>
+                    <span class="tka-kategori-count" id="tkaCountMemadai">0</span>
+                    <span class="tka-kategori-percent" id="tkaPercentMemadai">(0%)</span>
+                </div>
+                <div class="tka-kategori-row">
+                    <span class="tka-kategori-name">🔻 Kurang</span>
+                    <div class="tka-kategori-bar-container"><div id="tkaBarKurang" class="tka-kategori-bar bar-kurang" style="width:0%">0%</div></div>
+                    <span class="tka-kategori-count" id="tkaCountKurang">0</span>
+                    <span class="tka-kategori-percent" id="tkaPercentKurang">(0%)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kata Mutiara -->
+        <div class="tka-quotes-section">
+            <div class="tka-quotes-icon">💎</div>
+            <div class="tka-quotes-arabic" id="tkaQuotesArabic">وَقُل رَّبِّ زِدْنِي عِلْمًا</div>
+            <div class="tka-quotes-text" id="tkaQuotesText">"Dan katakanlah: Wahai Tuhanku, tambahkanlah aku ilmu pengetahuan."</div>
+            <div class="tka-quotes-source" id="tkaQuotesSource">— QS. Thaha: 114 —</div>
+        </div>
+
+    </div><!-- end tka-screen-only -->
+</div>
+    </main>
+</div>
+<!-- ==================== END DASHBOARD SECTION ==================== -->
+
+<!-- ==================== ADMIN SECTION ==================== -->
+<div id="adminSection" style="display:none; background:#edf2f0; min-height:100vh;">
+
+    <header class="dashboard-header">
+        <div class="header-brand">
+            <div class="header-brand-icon">م</div>
+            <div>
+                <div class="header-brand-portal" style="color:#f0c060; letter-spacing:1.5px;">Panel Admin</div>
+                <div class="header-brand-school">SMP ABBS Surakarta</div>
+            </div>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <div class="header-user-name" id="adminNama">Admin</div>
+                <div class="header-user-meta">Administrator</div>
+            </div>
+            <button class="logout-btn" id="adminLogoutBtn">Keluar</button>
+        </div>
+    </header>
+
+    <div class="tab-nav" id="adminTabNav">
+        <button class="tab-btn active" onclick="switchAdminTab('daftar',this)">👥 Daftar Siswa</button>
+        <button class="tab-btn" onclick="switchAdminTab('skn',this)">📄 SKN</button>
+        <button class="tab-btn" onclick="switchAdminTab('skl',this)">📜 SKL</button>
+        <button class="tab-btn" onclick="switchAdminTab('tka',this)">📊 TKA</button>
+    </div>
+
+    <main class="dashboard-body">
+
+        <!-- Tab: Daftar Siswa -->
+        <div id="adminTabDaftar" class="tab-content active">
+            <div class="admin-toolbar">
+                <div class="admin-filter">
+                    <label>🏫 Kelas:</label>
+                    <select id="adminFilterKelas" onchange="renderAdminTable()">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <span id="adminJumlahSiswa" style="font-size:0.8rem; color:#6a9490;"></span>
+                </div>
+                <div class="admin-actions">
+                    <button class="print-btn" onclick="cetakBatchAdmin('skn')">🖨️ Cetak SKN Kelas</button>
+                    <button class="print-btn" onclick="cetakBatchAdmin('skl')">🖨️ Cetak SKL Kelas</button>
+                    <button class="print-btn" onclick="cetakBatchAdmin('tka')">🖨️ Cetak TKA Kelas</button>
+                </div>
+            </div>
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width:48px;">No</th>
+                            <th style="width:80px;">NIS</th>
+                            <th>Nama Siswa</th>
+                            <th style="width:80px;">Kelas</th>
+                            <th style="width:210px; text-align:center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminSiswaTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab: SKN Preview -->
+        <div id="adminTabSkn" class="tab-content">
+            <div class="tab-toolbar">
+                <div>
+                    <h2 class="tab-title">Surat Keterangan Nilai (SKN)</h2>
+                    <div id="adminSknLabel" style="font-size:0.8rem; color:#6a9490; margin-top:2px;">—</div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak</button>
+            </div>
+            <!-- Navigator SKN -->
+            <div class="admin-nav-bar">
+                <div class="admin-nav-filter">
+                    <span>🏫</span>
+                    <select id="adminSknFilterKelas" onchange="adminNavSetKelas(this.value)">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <span class="admin-nav-count" id="adminNavCountSkn"></span>
+                </div>
+                <div class="admin-nav-controls">
+                    <button class="admin-nav-btn" id="adminNavPrevSkn" onclick="adminNavPrev()" disabled>← Sebelumnya</button>
+                    <span class="admin-nav-info" id="adminNavInfoSkn">—</span>
+                    <button class="admin-nav-btn" id="adminNavNextSkn" onclick="adminNavNext()">Berikutnya →</button>
+                </div>
+            </div>
+            <div class="doc-notice">💬 Hubungi <strong>wali kelas</strong> untuk pengambilan dokumen cetak.</div>
+            <div class="preview-area" id="adminSknContent"></div>
+        </div>
+
+        <!-- Tab: SKL Preview -->
+        <div id="adminTabSkl" class="tab-content">
+            <div class="tab-toolbar">
+                <div>
+                    <h2 class="tab-title">Surat Keterangan Lulus (SKL)</h2>
+                    <div id="adminSklLabel" style="font-size:0.8rem; color:#6a9490; margin-top:2px;">—</div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak</button>
+            </div>
+            <!-- Navigator SKL -->
+            <div class="admin-nav-bar">
+                <div class="admin-nav-filter">
+                    <span>🏫</span>
+                    <select id="adminSklFilterKelas" onchange="adminNavSetKelas(this.value)">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <span class="admin-nav-count" id="adminNavCountSkl"></span>
+                </div>
+                <div class="admin-nav-controls">
+                    <button class="admin-nav-btn" id="adminNavPrevSkl" onclick="adminNavPrev()" disabled>← Sebelumnya</button>
+                    <span class="admin-nav-info" id="adminNavInfoSkl">—</span>
+                    <button class="admin-nav-btn" id="adminNavNextSkl" onclick="adminNavNext()">Berikutnya →</button>
+                </div>
+            </div>
+            <div class="doc-notice">💬 Hubungi <strong>wali kelas</strong> untuk pengambilan dokumen cetak.</div>
+            <div id="adminSklContent" style="background:#dce5e2; border-radius:14px; padding:32px 20px; display:flex; justify-content:center; overflow-x:auto;"></div>
+        </div>
+
+        <!-- Tab: TKA -->
+        <div id="adminTabTka" class="tab-content">
+
+            <!-- Toolbar -->
+            <div class="tab-toolbar">
+                <div>
+                    <h2 class="tab-title">Hasil Tes Kemampuan Akademik (TKA)</h2>
+                    <div id="adminTkaLabel" style="font-size:0.8rem; color:#6a9490; margin-top:2px;">—</div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak</button>
+            </div>
+
+            <!-- Statistik & Distribusi — hanya layar, tidak tercetak -->
+            <div class="admin-tka-overview">
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" id="adminStatTotalSiswa">0</div>
+                        <div class="admin-stat-label">Total Siswa</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" id="adminStatRataMath">—</div>
+                        <div class="admin-stat-label">Rata-rata Matematika</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" id="adminStatRataBindo">—</div>
+                        <div class="admin-stat-label">Rata-rata B. Indonesia</div>
+                    </div>
+                </div>
+                <div class="tka-kategori-stats">
+                    <div class="tab-title" style="margin-bottom:16px;">📊 Distribusi Capaian Kategori (Seluruh Siswa)</div>
+                    <div class="tka-kategori-bars">
+                        <div class="tka-kategori-row"><span class="tka-kategori-name">🌟 Baik - Istimewa</span><div class="tka-kategori-bar-container"><div id="adminBarIstimewa" class="tka-kategori-bar bar-istimewa" style="width:0%">0%</div></div><span class="tka-kategori-count" id="adminCountIstimewa">0</span><span class="tka-kategori-percent" id="adminPercentIstimewa">(0%)</span></div>
+                        <div class="tka-kategori-row"><span class="tka-kategori-name">✅ Baik</span><div class="tka-kategori-bar-container"><div id="adminBarBaik" class="tka-kategori-bar bar-baik" style="width:0%">0%</div></div><span class="tka-kategori-count" id="adminCountBaik">0</span><span class="tka-kategori-percent" id="adminPercentBaik">(0%)</span></div>
+                        <div class="tka-kategori-row"><span class="tka-kategori-name">⚠️ Memadai</span><div class="tka-kategori-bar-container"><div id="adminBarMemadai" class="tka-kategori-bar bar-memadai" style="width:0%">0%</div></div><span class="tka-kategori-count" id="adminCountMemadai">0</span><span class="tka-kategori-percent" id="adminPercentMemadai">(0%)</span></div>
+                        <div class="tka-kategori-row"><span class="tka-kategori-name">🔻 Kurang</span><div class="tka-kategori-bar-container"><div id="adminBarKurang" class="tka-kategori-bar bar-kurang" style="width:0%">0%</div></div><span class="tka-kategori-count" id="adminCountKurang">0</span><span class="tka-kategori-percent" id="adminPercentKurang">(0%)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigator (sinkron dengan SKN & SKL) -->
+            <div class="admin-nav-bar">
+                <div class="admin-nav-filter">
+                    <span>🏫</span>
+                    <select id="adminTkaFilterKelas" onchange="adminNavSetKelas(this.value)">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <span class="admin-nav-count" id="adminNavCountTka"></span>
+                </div>
+                <div class="admin-nav-controls">
+                    <button class="admin-nav-btn" id="adminNavPrevTka" onclick="adminNavPrev()" disabled>← Sebelumnya</button>
+                    <span class="admin-nav-info" id="adminNavInfoTka">—</span>
+                    <button class="admin-nav-btn" id="adminNavNextTka" onclick="adminNavNext()">Berikutnya →</button>
+                </div>
+            </div>
+            <div class="doc-notice">💬 Hubungi <strong>wali kelas</strong> untuk pengambilan dokumen cetak.</div>
+
+            <!-- Dokumen formal TKA -->
+            <div class="preview-area" id="adminTkaContent"></div>
+
+        </div>
+
+    </main>
+</div>
+<!-- ==================== END ADMIN SECTION ==================== -->
+
+<!-- Area cetak batch -->
+<div id="adminPrintBatch" style="display:none;"></div>
+
+<!-- ==================== LOADING OVERLAY ==================== -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p id="loadingText">Memuat data...</p>
+    </div>
+</div>
+
+<!-- ==================== ERROR TOAST ==================== -->
+<div id="errorToast" class="error-toast">
+    <span id="errorMsg"></span>
+</div>
+
+<!-- JavaScript External -->
+<script src="script.js"></script>
+
+</body>
+</html>
