@@ -1,0 +1,11 @@
+# Data siswa & file rujukan (jangan di-push)
+master data final.xlsx
+*.xlsx
+*.docx
+~$*.docx
+
+# Backup
+*.zip
+
+# Editor
+.vscode/
