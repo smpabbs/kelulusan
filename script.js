@@ -445,10 +445,10 @@ function renderSKL(student, nomorUrut = 1) {
         return "<div style='text-align:center; padding:40px;'>Data tidak ditemukan</div>";
     }
 
-    const nomorSKL = `400.3.11/SMPABBS.SKL-${String(nomorUrut).padStart(3, '0')}/2026`;
+    const nomorSKL = `400.3.11/SMPABBS-SKL-${String(nomorUrut).padStart(3, '0')}/2026`;
     const tanggalSKL = '2 Juni 2026';            // tanggal penerbitan (tanda tangan)
     const tanggalKeputusanSKL = '29 Mei 2026';   // tanggal Rapat Dewan Guru & SK Kelulusan
-    const nomorSKKelulusan = '400.3.11/SMPABBS.SKL/2026';  // nomor SK Penetapan Kelulusan (sama semua siswa)
+    const nomorSKKelulusan = '421.2/330/KS/SMP ABBS/VI/2026';  // nomor SK Penetapan Kelulusan (sama semua siswa)
     let ttlText = student.ttl || (student.tempatLahir && student.tanggalLahir ? `${student.tempatLahir}, ${student.tanggalLahir}` : '-');
     const jenisKelamin = student.jenisKelamin || '-';
     const namaOrtu = student.namaOrtu || '-';
