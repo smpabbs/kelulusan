@@ -1293,6 +1293,25 @@ body {
         box-shadow: none !important;
         margin: 0 !important;
     }
+
+    /* Hapus min-height saat print tunggal agar tidak ada halaman kosong */
+    .skl-page {
+        min-height: 0 !important;
+        height: auto !important;
+    }
+
+    /* Rapatkan konten SKL agar muat 1 halaman tanpa terpotong */
+    .skl-page > div {
+        margin: 10mm 16mm !important;
+        line-height: 1.3 !important;
+    }
+    .skl-page .ttd-gap { height: 32px !important; }
+    .skl-page td,
+    .skl-page th {
+        padding-top: 1px !important;
+        padding-bottom: 1px !important;
+    }
+    .skl-page p { margin-top: 4pt !important; margin-bottom: 4pt !important; }
 }
 
 /* ==================== RESPONSIVE STYLES ==================== */

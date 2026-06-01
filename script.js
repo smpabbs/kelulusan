@@ -445,9 +445,13 @@ function renderSKL(student, nomorUrut = 1) {
         return "<div style='text-align:center; padding:40px;'>Data tidak ditemukan</div>";
     }
 
-    const nomorSKL = `400.3.11/SMPABBS-SKL-${String(nomorUrut).padStart(3, '0')}/2026`;
-    const tanggalSKL = '2 Juni 2026';
+    const nomorSKL = `400.3.11/SMPABBS.SKL-${String(nomorUrut).padStart(3, '0')}/2026`;
+    const tanggalSKL = '2 Juni 2026';            // tanggal penerbitan (tanda tangan)
+    const tanggalKeputusanSKL = '29 Mei 2026';   // tanggal Rapat Dewan Guru & SK Kelulusan
+    const nomorSKKelulusan = '400.3.11/SMPABBS.SKL/2026';  // nomor SK Penetapan Kelulusan (sama semua siswa)
     let ttlText = student.ttl || (student.tempatLahir && student.tanggalLahir ? `${student.tempatLahir}, ${student.tanggalLahir}` : '-');
+    const jenisKelamin = student.jenisKelamin || '-';
+    const namaOrtu = student.namaOrtu || '-';
 
     // Daftar mapel khusus SKL: urutan & nama sesuai format resmi DOCX
     const daftarMapelSKL = [
@@ -461,7 +465,7 @@ function renderSKL(student, nomorUrut = 1) {
         { key: "PJOK",                                label: "Pendidikan Jasmani, Olahraga dan Kesehatan",  no: 8  },
         { key: "Informatika / TIK",                   label: "Informatika",                                 no: 9  },
         { key: "Seni Budaya dan Prakarya",            label: "Seni dan Budaya",                             no: 10 },
-        { key: "Muatan Lokal (Bahasa Jawa)",          label: "Muatan Lokal",   sub: "Bahasa Jawa",          no: 11 },
+        { key: "Muatan Lokal (Bahasa Jawa)",          label: "Bahasa Jawa",                                 no: 11 },
     ];
 
     function hitungRataRataSmt1to5(nilaiMapel) {
@@ -517,13 +521,6 @@ function renderSKL(student, nomorUrut = 1) {
     });
 
     const rataRataSKL = jumlahMapelAda > 0 ? (totalNilaiSKL / jumlahMapelAda).toFixed(2).replace('.', ',') : '-';
-    const avgNum = parseFloat(rataRataSKL.replace(',', '.'));
-
-    let predikat = 'Sangat Kurang';
-    if (avgNum >= 91) predikat = 'Sangat Baik';
-    else if (avgNum >= 81) predikat = 'Baik';
-    else if (avgNum >= 71) predikat = 'Cukup';
-    else if (avgNum >= 61) predikat = 'Kurang';
 
     return `
         <div class="skl-page" style="padding:0; margin:0 auto;">
@@ -547,30 +544,28 @@ function renderSKL(student, nomorUrut = 1) {
                     <div style="font-size:11pt;">TAHUN AJARAN 2025/2026</div>
                 </div>
 
-                <p style="margin:0 0 2pt 0;">
-                    Yang bertanda tangan di bawah ini, Kepala SMP ABBS Surakarta:
+                <p style="margin:0 0 6pt 0; text-align:justify;">
+                    Yang bertanda tangan di bawah ini, Kepala SMP ABBS Surakarta Kecamatan Banjarsari Kota Surakarta, Provinsi Jawa Tengah Nomor Pokok Sekolah Nasional: 70040216 menerangkan bahwa:
                 </p>
-
-                <table style="width:100%; border-collapse:collapse; margin:2pt 0 6pt 0;">
-                    <tr><td style="width:40%;">Nomor Pokok Sekolah Nasional</td><td style="width:8px;">:</td><td>70040216</td></tr>
-                    <tr><td>Kabupaten</td><td>:</td><td>Surakarta</td></tr>
-                    <tr><td>Provinsi</td><td>:</td><td>Jawa Tengah</td></tr>
-                </table>
-
-                <p style="margin:0 0 2pt 0;">Dengan ini menyatakan bahwa</p>
 
                 <table style="width:100%; border-collapse:collapse; margin:2pt 0 6pt 0;">
                     <tr><td style="width:40%;">Nama Lengkap</td><td style="width:8px;">:</td><td><strong>${student.nama || '-'}</strong></td></tr>
                     <tr><td>Tempat dan Tanggal Lahir</td><td>:</td><td>${ttlText}</td></tr>
+                    <tr><td>Jenis Kelamin</td><td>:</td><td>${jenisKelamin}</td></tr>
+                    <tr><td>Nama Orang tua/wali</td><td>:</td><td>${namaOrtu}</td></tr>
                     <tr><td>Nomor Induk Siswa Nasional</td><td>:</td><td>${student.nisn || '-'}</td></tr>
                 </table>
+
+                <p style="margin:0 0 4pt 0; text-align:justify;">
+                    Berdasarkan Hasil Rapat Dewan Guru pada tanggal ${tanggalKeputusanSKL}, dan Surat Keputusan (SK) Kepala Sekolah Nomor : ${nomorSKKelulusan} tanggal ${tanggalKeputusanSKL} tentang Penetapan Kelulusan Tahun Ajaran 2025/2026, dengan ini peserta didik tersebut di atas dinyatakan :
+                </p>
 
                 <div style="text-align:center; margin:6pt 0;">
                     <strong style="font-size:15pt;">LULUS</strong>
                 </div>
 
                 <p style="margin:0 0 4pt 0; text-align:justify;">
-                    Berdasarkan Keputusan Kepala SMP ABBS Surakarta Nomor : ${nomorSKL} tanggal ${tanggalSKL} setelah memenuhi seluruh kriteria sesuai dengan peraturan perundang-undangan, dengan nilai sebagai berikut :
+                    Dari Sekolah Menengah Pertama setelah memenuhi seluruh kriteria sesuai dengan peraturan perundang-undangan yang berlaku dengan hasil belajar sebagai berikut:
                 </p>
 
                 <table style="width:100%; border-collapse:collapse;">
@@ -590,12 +585,16 @@ function renderSKL(student, nomorUrut = 1) {
                     </tbody>
                 </table>
 
-                <div style="display:flex; justify-content:flex-end; margin-top:12pt;">
-                    <div style="width:215px;">
-                        <div>Surakarta, ${tanggalSKL}</div>
-                        <div>Kepala SMP ABBS Surakarta</div>
-                        <div style="height:28pt;"></div>
-                        <div><strong><u>TRI WIJAYANTI, M.Pd</u></strong></div>
+                <p style="margin:8pt 0 0 0; text-align:justify;">
+                    Demikian Surat Keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya dan hanya berlaku sampai dengan diterbitkannya Ijazah
+                </p>
+
+                <div class="footer">
+                    <div class="ttd-box">
+                        <div>Kota Surakarta, ${tanggalSKL}</div>
+                        <div>Kepala Sekolah,</div>
+                        <div class="ttd-gap"></div>
+                        <div><strong style="text-decoration:underline;">TRI WIJAYANTI, M.Pd</strong></div>
                         <div>NIP. -</div>
                     </div>
                 </div>
@@ -616,7 +615,7 @@ function renderSKL(student, nomorUrut = 1) {
 function updateTKA() {
     if (!currentStudent) return;
     const docContent = document.getElementById('tkaDocContent');
-    if (docContent) docContent.innerHTML = renderTKADoc(currentStudent);
+    if (docContent) docContent.innerHTML = renderTKADoc(currentStudent, getNomorUrutSiswa(currentStudent));
     randomTkaQuotes();
 }
 
@@ -1029,7 +1028,7 @@ function adminNavRender() {
     const labelTKA  = document.getElementById('adminTkaLabel');
     const contentTKA = document.getElementById('adminTkaContent');
     if (labelTKA)  labelTKA.textContent  = `${s.nama} — Kelas ${s.kelas}`;
-    if (contentTKA) contentTKA.innerHTML = renderTKADoc(s);
+    if (contentTKA) contentTKA.innerHTML = renderTKADoc(s, getNomorUrutSiswa(s));
 
     adminNavUpdateUI();
     renderAdminTable();
@@ -1216,88 +1215,106 @@ window.adminViewTKA = function(idx) {
     adminNavSyncToStudent(idx, 'tka');
 };
 
-function renderTKADoc(student) {
+function renderTKADoc(student, nomorUrut = 1) {
     if (!student) return '';
 
-    const kelas        = student.kelas || '';
     const mathNilai    = student.tka_matematika       || 0;
     const bindoNilai   = student.tka_bahasa_indonesia || 0;
-    const rataKMath    = kelasStats[kelas]?.rata_math  || 0;
-    const rataKBindo   = kelasStats[kelas]?.rata_bindo || 0;
-    const rataSMath    = sekolahStats.rata_math        || 0;
-    const rataSBindo   = sekolahStats.rata_bindo       || 0;
     const tanggalSurat = '2 Juni 2026';
+    // Nomor SHTKA: angka berjalan mulai 144 utk siswa pertama (urutan sama spt SKL/SKN)
+    const nomorSHTKA   = `421.2/${143 + nomorUrut}/KS/SMP ABBS/VI/2026`;
 
     let ttlText = student.ttl || (student.tempatLahir && student.tanggalLahir
         ? `${student.tempatLahir}, ${student.tanggalLahir}` : '-');
 
-    const katLabel = n => {
-        if (!n || n === 0) return '-';
-        if (n >= 85) return 'Baik - Istimewa';
-        if (n >= 70) return 'Baik';
-        if (n >= 50) return 'Memadai';
-        return 'Kurang';
-    };
-    const fmt = n => n > 0 ? n.toFixed(2).replace('.', ',') : '-';
+    // Nilai ditampilkan apa adanya (koma sebagai pemisah desimal); '-' bila kosong
+    const fmtNilai = n => n > 0 ? String(n).replace('.', ',') : '-';
+
+    // Rata-rata dari mapel yang ada nilainya, dibulatkan 2 desimal seperti SKL
+    let totalNilai = 0, jumlahMapel = 0;
+    if (bindoNilai > 0) { totalNilai += bindoNilai; jumlahMapel++; }
+    if (mathNilai  > 0) { totalNilai += mathNilai;  jumlahMapel++; }
+    const rataRata = jumlahMapel > 0
+        ? (totalNilai / jumlahMapel).toFixed(2).replace('.', ',') : '-';
 
     return `
-        <div class="a4-page" style="padding:18mm 20mm;">
-            <div class="kop">
-                <img src="https://i.ibb.co.com/yFn890yV/logo-smpabbs.png" alt="Logo" crossorigin="anonymous">
-                <div class="kop-text">
-                    <h3>YAYASAN AL ABIDIN SURAKARTA</h3>
-                    <h1>SMP ABBS SURAKARTA</h1>
-                    <p>Jl Taruma Negara III, Banyuanyar, Banjarsari, Surakarta</p>
-                    <p>Email: smpabbs@alabidin.sch.id | laman: www.smpabbs.alabidin.sch.id</p>
+        <div class="skl-page" style="padding:0; margin:0 auto;">
+            <div style="margin:20mm; font-family:Arial, sans-serif; font-size:11pt; line-height:1.4; color:#000;">
+                <div style="display:flex; align-items:center; gap:12px; padding-bottom:4px;">
+                    <img src="https://i.ibb.co.com/yFn890yV/logo-smpabbs.png" style="width:90px;" crossorigin="anonymous">
+                    <div style="text-align:center; flex:1;">
+                        <div style="font-size:11pt;">YAYASAN AL ABIDIN SURAKARTA</div>
+                        <div style="font-size:16pt; font-weight:bold;">SMP ABBS SURAKARTA</div>
+                        <div style="font-size:10pt;">Jl. Taruma Negara III, Banyuanyar, Banjarsari, Surakarta</div>
+                        <div style="font-size:10pt;">Email: smpabbs@alabidin.sch.id | laman: www.smpabbs.alabidin.sch.id</div>
+                    </div>
                 </div>
-            </div>
-            <div class="line-bold" style="margin-bottom:18px;"></div>
+                <div style="border-top:3px solid #000; border-bottom:1px solid #000; height:3px; margin-bottom:10pt;"></div>
 
-            <div class="title">HASIL TES KEMAMPUAN AKADEMIK (TKA)</div>
-            <div class="nomor" style="margin-bottom:22px;">Tahun Pelajaran 2025/2026</div>
+                <div style="text-align:center; margin-bottom:8pt;">
+                    <div style="font-size:13pt; font-weight:bold; text-decoration:underline;">SURAT KETERANGAN HASIL TES KEMAMPUAN AKADEMIK (TKA)</div>
+                    <div style="font-size:11pt;">Nomor : ${nomorSHTKA}</div>
+                    <div style="margin:6pt 0;"></div>
+                    <div style="font-size:11pt; font-weight:bold;">SEKOLAH MENENGAH PERTAMA</div>
+                    <div style="font-size:11pt;">TAHUN AJARAN 2025/2026</div>
+                </div>
 
-            <table class="tbl-bio" style="margin-bottom:22px; font-size:11pt; line-height:1.8;">
-                <tr><td width="32%">Nama</td><td width="4%">:</td><td><strong>${student.nama || '-'}</strong></td></tr>
-                <tr><td>NISN</td><td>:</td><td>${student.nisn || '-'}</td></tr>
-                <tr><td>Kelas</td><td>:</td><td>${kelas || '-'}</td></tr>
-                <tr><td>Tempat, Tanggal Lahir</td><td>:</td><td>${ttlText}</td></tr>
-            </table>
+                <p style="margin:0 0 2pt 0;">
+                    Yang bertanda tangan di bawah ini, Kepala SMP ABBS Surakarta:
+                </p>
 
-            <table class="tbl-nilai" style="margin-bottom:32px;">
-                <thead>
-                    <tr>
-                        <th class="text-left" style="padding:10px 8px;">Mata Pelajaran</th>
-                        <th style="padding:10px 8px;">Nilai</th>
-                        <th style="padding:10px 8px;">Kategori</th>
-                        <th style="padding:10px 8px;">Rata-rata Kelas</th>
-                        <th style="padding:10px 8px;">Rata-rata Sekolah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="text-left" style="padding:10px 8px;">Matematika</td>
-                        <td style="padding:10px 8px;"><strong>${mathNilai > 0 ? mathNilai : '-'}</strong></td>
-                        <td style="padding:10px 8px;">${katLabel(mathNilai)}</td>
-                        <td style="padding:10px 8px;">${fmt(rataKMath)}</td>
-                        <td style="padding:10px 8px;">${fmt(rataSMath)}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left" style="padding:10px 8px;">Bahasa Indonesia</td>
-                        <td style="padding:10px 8px;"><strong>${bindoNilai > 0 ? bindoNilai : '-'}</strong></td>
-                        <td style="padding:10px 8px;">${katLabel(bindoNilai)}</td>
-                        <td style="padding:10px 8px;">${fmt(rataKBindo)}</td>
-                        <td style="padding:10px 8px;">${fmt(rataSBindo)}</td>
-                    </tr>
-                </tbody>
-            </table>
+                <table style="width:100%; border-collapse:collapse; margin:2pt 0 6pt 0;">
+                    <tr><td style="width:40%;">Nomor Pokok Sekolah Nasional</td><td style="width:8px;">:</td><td>70040216</td></tr>
+                    <tr><td>Kabupaten</td><td>:</td><td>Surakarta</td></tr>
+                    <tr><td>Provinsi</td><td>:</td><td>Jawa Tengah</td></tr>
+                </table>
 
-            <div class="footer" style="margin-top:40px;">
-                <div class="ttd-box">
-                    <div>Kota Surakarta, ${tanggalSurat}</div>
-                    <div>Kepala Sekolah,</div>
-                    <div class="ttd-gap"></div>
-                    <div><strong style="text-decoration:underline;">TRI WIJAYANTI, M.Pd</strong></div>
-                    <div>NIP. -</div>
+                <p style="margin:0 0 2pt 0;">Dengan ini menyatakan bahwa</p>
+
+                <table style="width:100%; border-collapse:collapse; margin:2pt 0 6pt 0;">
+                    <tr><td style="width:40%;">Nama Lengkap</td><td style="width:8px;">:</td><td><strong>${student.nama || '-'}</strong></td></tr>
+                    <tr><td>Tempat dan Tanggal Lahir</td><td>:</td><td>${ttlText}</td></tr>
+                    <tr><td>Nomor Induk Siswa Nasional</td><td>:</td><td>${student.nisn || '-'}</td></tr>
+                </table>
+
+                <p style="margin:0 0 4pt 0; text-align:justify;">
+                    Berdasarkan Daftar Kolektif Hasil Tes Kemampuan Akademik (TKA) Tahun 2026, Kementerian Pendidikan Dasar dan Menengah Dinas Pendidikan dan Kebudayaan Kota Surakarta, dengan nilai sebagai berikut :
+                </p>
+
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:#efefef;">
+                            <th style="border:1px solid #000; padding:2px 5px; width:8%;">No.</th>
+                            <th style="border:1px solid #000; padding:2px 5px; text-align:left;">TES KEMAMPUAN AKADEMIK (TKA)</th>
+                            <th style="border:1px solid #000; padding:2px 5px; width:20%;">Nilai</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border:1px solid #000; padding:2px 5px; text-align:center;">1.</td>
+                            <td style="border:1px solid #000; padding:2px 5px;">BAHASA INDONESIA</td>
+                            <td style="border:1px solid #000; padding:2px 5px; text-align:center;">${fmtNilai(bindoNilai)}</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:2px 5px; text-align:center;">2.</td>
+                            <td style="border:1px solid #000; padding:2px 5px;">MATEMATIKA</td>
+                            <td style="border:1px solid #000; padding:2px 5px; text-align:center;">${fmtNilai(mathNilai)}</td>
+                        </tr>
+                        <tr style="font-weight:bold;">
+                            <td colspan="2" style="border:1px solid #000; padding:2px 5px; text-align:center;">Rata-rata</td>
+                            <td style="border:1px solid #000; padding:2px 5px; text-align:center;">${rataRata}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="display:flex; justify-content:flex-end; margin-top:12pt;">
+                    <div style="width:215px;">
+                        <div>Surakarta, ${tanggalSurat}</div>
+                        <div>Kepala SMP ABBS Surakarta</div>
+                        <div style="height:28pt;"></div>
+                        <div><strong><u>Tri Wijayanti, M.Pd</u></strong></div>
+                        <div>NIP. -</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1318,7 +1335,7 @@ window.cetakBatchAdmin = function(type) {
         let doc;
         if (type === 'skn')      doc = renderSKN(s, getNomorUrutSiswa(s));
         else if (type === 'skl') doc = renderSKL(s, getNomorUrutSiswa(s));
-        else                     doc = renderTKADoc(s);
+        else                     doc = renderTKADoc(s, getNomorUrutSiswa(s));
         return `<div class="batch-page">${doc}</div>`;
     }).join('');
 
