@@ -125,6 +125,7 @@
         <button class="tab-btn" data-tab="skn">📄 SKN</button>
         <button class="tab-btn" data-tab="skl">📜 SKL</button>
         <button class="tab-btn" data-tab="tka">📊 Hasil TKA</button>
+        <button class="tab-btn" id="tabBtnTn" data-tab="tn" style="display:none;">📋 Transkrip</button>
     </div>
 
     <!-- Main Content -->
@@ -263,6 +264,18 @@
 
     </div><!-- end tka-screen-only -->
 </div>
+
+        <!-- ==================== TAB TN (Transkrip Nilai) — kelas 9 ==================== -->
+        <div id="tabTn" class="tab-content">
+            <div class="tab-toolbar">
+                <h2 class="tab-title">Transkrip Nilai</h2>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+            </div>
+            <div class="doc-notice">📋 Dokumen cetak dapat diambil dengan konfirmasi kepada wali kelas dan hadir sesuai jadwal berikut:<br>&bull; <strong>Selasa, 3 Juni 2026</strong> &rarr; pukul 14.00&ndash;15.30 &nbsp;|&nbsp; <strong>Rabu, 4 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30 &nbsp;|&nbsp; <strong>Kamis, 5 Juni 2026</strong> &rarr; pukul 13.00&ndash;15.30</div>
+            <div id="tnContent">
+                <div style="text-align:center; padding:40px; color:#6a9490;">Memuat data...</div>
+            </div>
+        </div>
     </main>
 </div>
 <!-- ==================== END DASHBOARD SECTION ==================== -->
@@ -292,6 +305,7 @@
         <button class="tab-btn" onclick="switchAdminTab('skn',this)">📄 SKN</button>
         <button class="tab-btn" onclick="switchAdminTab('skl',this)">📜 SKL</button>
         <button class="tab-btn" onclick="switchAdminTab('tka',this)">📊 TKA</button>
+        <button class="tab-btn" onclick="switchAdminTab('tn',this)">📋 Transkrip</button>
     </div>
 
     <main class="dashboard-body">
@@ -310,6 +324,7 @@
                     <button class="print-btn" onclick="cetakBatchAdmin('skn')">🖨️ Cetak SKN Kelas</button>
                     <button class="print-btn" onclick="cetakBatchAdmin('skl')">🖨️ Cetak SKL Kelas</button>
                     <button class="print-btn" onclick="cetakBatchAdmin('tka')">🖨️ Cetak TKA Kelas</button>
+                    <button class="print-btn" onclick="cetakBatchAdmin('tn')">🖨️ Cetak Transkrip Kelas</button>
                 </div>
             </div>
             <div class="admin-table-wrap">
@@ -320,7 +335,7 @@
                             <th style="width:80px;">NIS</th>
                             <th>Nama Siswa</th>
                             <th style="width:80px;">Kelas</th>
-                            <th style="width:210px; text-align:center;">Aksi</th>
+                            <th style="width:250px; text-align:center;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="adminSiswaTbody"></tbody>
@@ -443,6 +458,50 @@
             <!-- Dokumen formal TKA -->
             <div class="preview-area" id="adminTkaContent"></div>
 
+        </div>
+
+        <!-- Tab: Transkrip Nilai (TN) -->
+        <div id="adminTabTn" class="tab-content">
+            <div class="tab-toolbar">
+                <div>
+                    <h2 class="tab-title">Transkrip Nilai (TN)</h2>
+                    <div id="adminTnLabel" style="font-size:0.8rem; color:#6a9490; margin-top:2px;">—</div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Cetak</button>
+            </div>
+
+            <!-- Pengaturan tanggal transkrip -->
+            <div class="admin-settings-bar" id="adminTnTanggalBar">
+                <div class="admin-settings-title">⚙️ Pengaturan Tanggal Transkrip</div>
+                <div class="admin-settings-fields">
+                    <label class="admin-settings-field">
+                        <span>📅 Tanggal Kelulusan</span>
+                        <input type="date" id="adminTnTglKelulusan" value="2026-06-02" onchange="setTnTanggal('kelulusan', this.value)">
+                    </label>
+                    <label class="admin-settings-field">
+                        <span>✍️ Tanggal Tanda Tangan</span>
+                        <input type="date" id="adminTnTglTtd" value="2026-06-15" onchange="setTnTanggal('ttd', this.value)">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Navigator TN (sinkron dengan SKN/SKL/TKA) -->
+            <div class="admin-nav-bar">
+                <div class="admin-nav-filter">
+                    <span>🏫</span>
+                    <select id="adminTnFilterKelas" onchange="adminNavSetKelas(this.value)">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <span class="admin-nav-count" id="adminNavCountTn"></span>
+                </div>
+                <div class="admin-nav-controls">
+                    <button class="admin-nav-btn" id="adminNavPrevTn" onclick="adminNavPrev()" disabled>← Sebelumnya</button>
+                    <span class="admin-nav-info" id="adminNavInfoTn">—</span>
+                    <button class="admin-nav-btn" id="adminNavNextTn" onclick="adminNavNext()">Berikutnya →</button>
+                </div>
+            </div>
+            <div class="doc-notice">💬 Hubungi <strong>wali kelas</strong> untuk pengambilan dokumen cetak.</div>
+            <div class="preview-area" id="adminTnContent"></div>
         </div>
 
     </main>

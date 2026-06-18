@@ -1282,12 +1282,13 @@ body {
         display: block !important;
     }
     
-    #sklContent {
+    #sklContent,
+    #tnContent {
         background: transparent !important;
         padding: 0 !important;
         display: block !important;
     }
-    
+
     .a4-page,
     .skl-page {
         box-shadow: none !important;
@@ -1481,7 +1482,15 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 600;
     transition: all 0.18s;
-    margin-right: 4px;
+    margin: 0;
+}
+
+/* Wadah tombol aksi per baris tabel admin — rapi & membungkus otomatis */
+.admin-row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
 }
 
 .admin-action-btn.btn-skn { color: var(--green); border-color: var(--green); }
@@ -1490,6 +1499,8 @@ body {
 .admin-action-btn.btn-skl:hover { background: var(--gold); color: white; }
 .admin-action-btn.btn-tka { color: #7c3aed; border-color: #7c3aed; }
 .admin-action-btn.btn-tka:hover { background: #7c3aed; color: white; }
+.admin-action-btn.btn-tn { color: #0e7490; border-color: #0e7490; }
+.admin-action-btn.btn-tn:hover { background: #0e7490; color: white; }
 
 .admin-stats-grid {
     display: grid;
@@ -1524,6 +1535,59 @@ body {
     border-radius: 12px;
     font-size: 0.68rem;
     font-weight: 600;
+}
+
+/* ==================== ADMIN SETTINGS BAR (Pengaturan Tanggal) ==================== */
+.admin-settings-bar {
+    background: linear-gradient(180deg, #fbfaf4 0%, #f6f3e9 100%);
+    border: 1px solid var(--gold2);
+    border-left: 4px solid var(--gold);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+}
+
+.admin-settings-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #8a6d23;
+    letter-spacing: 0.3px;
+    margin-bottom: 12px;
+}
+
+.admin-settings-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+}
+
+.admin-settings-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.admin-settings-field > span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--deep);
+}
+
+.admin-settings-field input[type="date"] {
+    padding: 7px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.84rem;
+    color: var(--deep);
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.admin-settings-field input[type="date"]:focus {
+    outline: none;
+    border-color: var(--gold);
 }
 
 /* ==================== ADMIN NAVIGATOR ==================== */
@@ -1624,6 +1688,7 @@ body {
     #adminSection .tab-nav,
     #adminSection .tab-toolbar,
     #adminSection .admin-nav-bar,
+    #adminSection .admin-settings-bar,
     #adminSection .doc-notice,
     #adminSection .admin-toolbar,
     #adminSection .admin-tka-overview,
@@ -1641,7 +1706,8 @@ body {
         border-radius: 0 !important; display: block !important;
         justify-content: unset !important;
     }
-    #adminTkaContent {
+    #adminTkaContent,
+    #adminTnContent {
         background: transparent !important; padding: 0 !important;
         border-radius: 0 !important; display: block !important;
     }

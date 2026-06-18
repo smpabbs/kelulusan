@@ -53,7 +53,8 @@ function doGet() {
       let colNis = -1, colNisn = -1, colNama = -1, colTtl = -1;
       let colTkaMath = -1, colTkaBindo = -1;
       let colJenisKelamin = -1, colNamaAyah = -1;
-      
+      let colNomorIjazah = -1;
+
       // Cari kolom berdasarkan header (case insensitive)
       for (let i = 0; i < headers.length; i++) {
         const header = String(headers[i] || "").toLowerCase().trim();
@@ -61,10 +62,10 @@ function doGet() {
         if (header === "nisn") colNisn = i;
         if (header === "nama lengkap") colNama = i;
         if (header === "ttl") colTtl = i;
-        if (header === "nama ayah" || header === "nama orang tua" ||
-            header === "nama orang tua/wali" || header === "nama wali" ||
-            header === "nama ortu") colNamaAyah = i;
+        if (header === "nama ayah") colNamaAyah = i;
         if (header === "jenis kelamin") colJenisKelamin = i;
+        if (header === "nomor ijazah" || header === "no ijazah" ||
+            header === "no. ijazah" || header === "nomor seri ijazah") colNomorIjazah = i;
         if (header.indexOf("tka matematika") !== -1) colTkaMath = i;
         if (header.indexOf("tka bahasa indonesia") !== -1) colTkaBindo = i;
       }
@@ -84,7 +85,8 @@ function doGet() {
         const ttl = colTtl !== -1 ? String(data[row][colTtl] || "") : "";
         const jenisKelamin = colJenisKelamin !== -1 ? String(data[row][colJenisKelamin] || "") : "";
         const namaOrtu = colNamaAyah !== -1 ? String(data[row][colNamaAyah] || "") : "";
-        
+        const nomorIjazah = colNomorIjazah !== -1 ? String(data[row][colNomorIjazah] || "") : "";
+
         // Nilai TKA
         let tkaMatematika = null, tkaMatematikaKategori = null;
         let tkaBahasaIndonesia = null, tkaBahasaIndonesiaKategori = null;
@@ -169,6 +171,7 @@ function doGet() {
           tanggalLahir: tanggalLahir,
           jenisKelamin: jenisKelamin,
           namaOrtu: namaOrtu,
+          nomorIjazah: nomorIjazah,
           tka_matematika: tkaMatematika,
           kategori_matematika: tkaMatematikaKategori,
           tka_bahasa_indonesia: tkaBahasaIndonesia,

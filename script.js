@@ -18,7 +18,7 @@ const SUPABASE_URL = 'https://drlsnhnqxkcgcuskswwx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRybHNuaG5xeGtjZ2N1c2tzd3d4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyNTI5NDMsImV4cCI6MjA4NzgyODk0M30.IbnoYC02FUwMsCbdwb5bPFEjnMvkVc2NGwfrWwR8BQs';
 
 // 🔴 GANTI DENGAN URL APPS SCRIPT ANDA 🔴
-const API_URL = "https://script.google.com/macros/s/AKfycbyfrDZsGQZQ0g_3w6TeqIGXquuiyUImLj-XiZQP7Q4mDb7TrjEEmYAGUV6BJDl8ScN-2Q/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwhK_0LsZzkqIPZuxtYFG63vOq0Oq4uRuUbvWAxSPkMvE_pH30q_gqq1UWlnzddiXsbcw/exec";
 
 // Daftar mata pelajaran untuk SKN (urutan sesuai file Excel)
 const daftarMapel = [
@@ -61,6 +61,10 @@ let adminCurrentIdx = -1;           // Index siswa yang sedang aktif di panel ad
 let adminNavFiltered = [];          // Daftar siswa setelah filter kelas di navigator
 let adminNavPos = 0;                // Posisi saat ini di adminNavFiltered
 let siswaAdaTagihan = false;        // true jika siswa masih punya tagihan belum lunas
+
+// Pengaturan tanggal Transkrip Nilai (TN) — dapat diubah dari panel admin
+let tnTanggalKelulusan = '2026-06-02';  // Tanggal Kelulusan (default 2 Juni 2026)
+let tnTanggalTtd       = '2026-06-15';  // Tanggal tanda tangan / penerbitan (default 15 Juni 2026)
 
 // ==================== DOM ELEMENTS ====================
 // Login Section
@@ -604,6 +608,157 @@ function renderSKL(student, nomorUrut = 1) {
 }
 
 /**
+ * Cek apakah siswa termasuk kelas 9 (Transkrip Nilai hanya untuk kelas 9)
+ * @param {object} student
+ * @returns {boolean}
+ */
+function isKelas9(student) {
+    return !!student && /9/.test(String(student.kelas || ''));
+}
+
+/**
+ * Render Transkrip Nilai (TN) - format A4
+ * Format mengikuti master TN.docx; identitas/kop/logo & nama Kepala
+ * mengikuti dokumen existing (SKN/SKL). Nilai per mapel memakai rumus SKL.
+ * @param {object} student - Data siswa
+ * @param {number} nomorUrut - Nomor urut untuk penomoran transkrip
+ * @returns {string} HTML string untuk TN
+ */
+function renderTN(student, nomorUrut = 1) {
+    if (!student) {
+        return "<div style='text-align:center; padding:40px;'>Data tidak ditemukan</div>";
+    }
+
+    const nomorTN = `400.3.11/SMPABBS-TN-${String(nomorUrut).padStart(3, '0')}/2026`;
+    const tglKelulusan = formatTanggalIndonesia(tnTanggalKelulusan);
+    const tglTtd       = formatTanggalIndonesia(tnTanggalTtd);
+
+    let ttlText = student.ttl || (student.tempatLahir && student.tanggalLahir
+        ? `${student.tempatLahir}, ${student.tanggalLahir}` : '-');
+    const nomorIjazah = student.nomorIjazah && String(student.nomorIjazah).trim()
+        ? student.nomorIjazah : '-';
+
+    // Daftar 11 mapel — sama persis dengan SKL
+    const daftarMapelTN = [
+        { key: "Pendidikan Agama dan Budi Pekerti",  label: "Pendidikan Agama dan Budi Pekerti",            no: 1  },
+        { key: "Pendidikan Pancasila / PKn",          label: "Pendidikan Pancasila dan Kewarganegaraan",    no: 2  },
+        { key: "Bahasa Indonesia",                    label: "Bahasa Indonesia",                            no: 3  },
+        { key: "Matematika",                          label: "Matematika",                                  no: 4  },
+        { key: "Ilmu Pengetahuan Alam",               label: "Ilmu Pengetahuan Alam",                       no: 5  },
+        { key: "Ilmu Pengetahuan Sosial",             label: "Ilmu Pengetahuan Sosial",                     no: 6  },
+        { key: "Bahasa Inggris",                      label: "Bahasa Inggris",                              no: 7  },
+        { key: "PJOK",                                label: "Pendidikan Jasmani, Olahraga, dan Kesehatan", no: 8  },
+        { key: "Informatika / TIK",                   label: "Informatika",                                 no: 9  },
+        { key: "Seni Budaya dan Prakarya",            label: "Seni Budaya dan Prakarya",                    no: 10 },
+        { key: "Muatan Lokal (Bahasa Jawa)",          label: "Bahasa Jawa",                                 no: 11 },
+    ];
+
+    // Nilai per mapel memakai rumus SKL: (rata Smt1-5 x 0,6) + (Smt6 x 0,4)
+    function hitungRataRataSmt1to5(nilaiMapel) {
+        if (!nilaiMapel) return 0;
+        let total = 0, count = 0;
+        ['s1', 's2', 's3', 's4', 's5'].forEach(sem => {
+            if (nilaiMapel[sem] > 0) { total += nilaiMapel[sem]; count++; }
+        });
+        return count > 0 ? total / count : 0;
+    }
+
+    let rowsHTML = '';
+    let totalNilai = 0;
+    let jumlahMapelAda = 0;
+
+    daftarMapelTN.forEach((mp) => {
+        const nilaiMapel = student.nilai?.[mp.key] || {};
+        const rataSmt1to5 = hitungRataRataSmt1to5(nilaiMapel);
+        const nilaiSmt6 = nilaiMapel.s6 || 0;
+
+        let nilai = 0, nilaiTampil = '-';
+        if (rataSmt1to5 > 0 && nilaiSmt6 > 0) {
+            nilai = (rataSmt1to5 * 0.6) + (nilaiSmt6 * 0.4);
+        } else if (rataSmt1to5 > 0) {
+            nilai = rataSmt1to5;
+        } else if (nilaiSmt6 > 0) {
+            nilai = nilaiSmt6;
+        }
+
+        if (nilai > 0) {
+            nilaiTampil = nilai.toFixed(2).replace('.', ',');
+            totalNilai += nilai;
+            jumlahMapelAda++;
+        }
+
+        rowsHTML += `
+            <tr>
+                <td style="text-align:center; padding:2px 5px; border:1px solid #000;">${mp.no}</td>
+                <td style="padding:2px 5px; border:1px solid #000;">${mp.label}</td>
+                <td style="text-align:center; padding:2px 5px; border:1px solid #000;">${nilaiTampil}</td>
+            </tr>`;
+    });
+
+    const rataRata = jumlahMapelAda > 0
+        ? (totalNilai / jumlahMapelAda).toFixed(2).replace('.', ',') : '-';
+
+    return `
+        <div class="skl-page" style="padding:0; margin:0 auto;">
+            <div style="margin:20mm; font-family:Arial, sans-serif; font-size:11pt; line-height:1.4; color:#000;">
+                <div style="display:flex; align-items:center; gap:12px; padding-bottom:4px;">
+                    <img src="https://i.ibb.co.com/yFn890yV/logo-smpabbs.png" style="width:90px;" crossorigin="anonymous">
+                    <div style="text-align:center; flex:1;">
+                        <div style="font-size:11pt;">YAYASAN AL ABIDIN SURAKARTA</div>
+                        <div style="font-size:16pt; font-weight:bold;">SMP ABBS SURAKARTA</div>
+                        <div style="font-size:10pt;">Jl. Taruma Negara III, Banyuanyar, Banjarsari, Surakarta</div>
+                        <div style="font-size:10pt;">Email: smpabbs@alabidin.sch.id | laman: www.smpabbs.alabidin.sch.id</div>
+                    </div>
+                </div>
+                <div style="border-top:3px solid #000; border-bottom:1px solid #000; height:3px; margin-bottom:10pt;"></div>
+
+                <div style="text-align:center; margin-bottom:8pt;">
+                    <div style="font-size:13pt; font-weight:bold; text-decoration:underline;">TRANSKRIP NILAI</div>
+                    <div style="font-size:11pt;">Nomor : ${nomorTN}</div>
+                </div>
+
+                <table style="width:100%; border-collapse:collapse; margin:2pt 0 8pt 0;">
+                    <tr><td style="width:40%;">Nama Sekolah</td><td style="width:8px;">:</td><td>SMP ABBS Surakarta</td></tr>
+                    <tr><td>Nomor Pokok Sekolah Nasional</td><td>:</td><td>70040216</td></tr>
+                    <tr><td>Nama Lengkap</td><td>:</td><td><strong>${student.nama || '-'}</strong></td></tr>
+                    <tr><td>Tempat, Tanggal Lahir</td><td>:</td><td>${ttlText}</td></tr>
+                    <tr><td>Nomor Induk Siswa Nasional</td><td>:</td><td>${student.nisn || '-'}</td></tr>
+                    <tr><td>Nomor Ijazah</td><td>:</td><td>${nomorIjazah}</td></tr>
+                    <tr><td>Tanggal Kelulusan</td><td>:</td><td>${tglKelulusan}</td></tr>
+                </table>
+
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:#efefef;">
+                            <th style="border:1px solid #000; padding:2px 5px; width:8%;">No.</th>
+                            <th style="border:1px solid #000; padding:2px 5px; text-align:left;">Mata Pelajaran</th>
+                            <th style="border:1px solid #000; padding:2px 5px; width:20%;">Nilai</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHTML}
+                        <tr style="font-weight:bold;">
+                            <td colspan="2" style="border:1px solid #000; padding:2px 5px; text-align:center;">Rata-Rata</td>
+                            <td style="border:1px solid #000; padding:2px 5px; text-align:center;">${rataRata}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="display:flex; justify-content:flex-end; margin-top:14pt;">
+                    <div style="width:230px;">
+                        <div>Kota Surakarta, ${tglTtd}</div>
+                        <div>Kepala Sekolah,</div>
+                        <div style="height:34pt;"></div>
+                        <div><strong style="text-decoration:underline;">TRI WIJAYANTI, M.Pd</strong></div>
+                        <div>NIP. -</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
  * Update tampilan TKA (nilai, perbandingan, distribusi kategori)
  */
 /**
@@ -662,6 +817,19 @@ function updateSKL() {
 }
 
 /**
+ * Update tampilan Transkrip Nilai (TN) - hanya untuk kelas 9
+ */
+function updateTN() {
+    const tnContainer = document.getElementById('tnContent');
+    if (!tnContainer) return;
+    if (currentStudent) {
+        tnContainer.innerHTML = renderTN(currentStudent, getNomorUrutSiswa(currentStudent));
+    } else {
+        tnContainer.innerHTML = "<div style='text-align:center; padding:40px;'>Data tidak ditemukan</div>";
+    }
+}
+
+/**
  * Update dashboard setelah login (semua tab)
  */
 /**
@@ -687,10 +855,15 @@ function updateDashboard() {
     
     updateTabLockState();
 
+    // Tab Transkrip Nilai hanya tampil untuk siswa kelas 9
+    const tnTabBtn = document.getElementById('tabBtnTn');
+    if (tnTabBtn) tnTabBtn.style.display = isKelas9(currentStudent) ? '' : 'none';
+
     // Update semua tab
     updateSKN();
     updateSKL();
     updateTKA();  // ← PASTIKAN INI ADA
+    updateTN();
 
     console.log("=== updateDashboard() selesai ===");
 }
@@ -929,15 +1102,15 @@ window.switchTab = function(tabName) {
     dash.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     dash.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
-    const tabMap = { beranda: 'tabBeranda', skn: 'tabSkn', skl: 'tabSkl', tka: 'tabTka' };
+    const tabMap = { beranda: 'tabBeranda', skn: 'tabSkn', skl: 'tabSkl', tka: 'tabTka', tn: 'tabTn' };
     const tabEl = document.getElementById(tabMap[tabName]);
     if (tabEl) tabEl.classList.add('active');
 
     const btnEl = dash.querySelector(`.tab-btn[data-tab="${tabName}"]`);
     if (btnEl) btnEl.classList.add('active');
 
-    if (['skn', 'skl'].includes(tabName) && siswaAdaTagihan) {
-        const containerMap = { skn: 'previewArea', skl: 'sklContent' };
+    if (['skn', 'skl', 'tn'].includes(tabName) && siswaAdaTagihan) {
+        const containerMap = { skn: 'previewArea', skl: 'sklContent', tn: 'tnContent' };
         const el = document.getElementById(containerMap[tabName]);
         if (el) el.innerHTML = renderTagihanBlocked();
         return;
@@ -946,6 +1119,7 @@ window.switchTab = function(tabName) {
     if (tabName === 'skn') updateSKN();
     else if (tabName === 'skl') updateSKL();
     else if (tabName === 'tka') updateTKA();
+    else if (tabName === 'tn') updateTN();
 };
 
 // Attach event listeners hanya untuk tab siswa (yang punya data-tab)
@@ -959,7 +1133,7 @@ document.querySelectorAll('#dashboardSection .tab-btn[data-tab]').forEach(btn =>
 
 function populateKelasDropdowns() {
     const kelas = [...new Set(globalDataSiswa.map(s => s.kelas).filter(Boolean))].sort();
-    ['adminFilterKelas', 'adminTkaFilterKelas', 'adminSknFilterKelas', 'adminSklFilterKelas'].forEach(id => {
+    ['adminFilterKelas', 'adminTkaFilterKelas', 'adminSknFilterKelas', 'adminSklFilterKelas', 'adminTnFilterKelas'].forEach(id => {
         const sel = document.getElementById(id);
         if (!sel) return;
         sel.innerHTML = '<option value="">Semua Kelas</option>';
@@ -992,19 +1166,19 @@ function adminNavUpdateUI() {
     const info  = total > 0 ? `${nama} (${pos + 1} / ${total})` : '—';
     const count = total > 0 ? `(${total} siswa)` : '';
 
-    ['adminNavInfoSkn', 'adminNavInfoSkl', 'adminNavInfoTka'].forEach(id => {
+    ['adminNavInfoSkn', 'adminNavInfoSkl', 'adminNavInfoTka', 'adminNavInfoTn'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = info;
     });
-    ['adminNavCountSkn', 'adminNavCountSkl', 'adminNavCountTka'].forEach(id => {
+    ['adminNavCountSkn', 'adminNavCountSkl', 'adminNavCountTka', 'adminNavCountTn'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = count;
     });
-    ['adminNavPrevSkn', 'adminNavPrevSkl', 'adminNavPrevTka'].forEach(id => {
+    ['adminNavPrevSkn', 'adminNavPrevSkl', 'adminNavPrevTka', 'adminNavPrevTn'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.disabled = pos <= 0;
     });
-    ['adminNavNextSkn', 'adminNavNextSkl', 'adminNavNextTka'].forEach(id => {
+    ['adminNavNextSkn', 'adminNavNextSkl', 'adminNavNextTka', 'adminNavNextTn'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.disabled = pos >= total - 1;
     });
@@ -1030,12 +1204,17 @@ function adminNavRender() {
     if (labelTKA)  labelTKA.textContent  = `${s.nama} — Kelas ${s.kelas}`;
     if (contentTKA) contentTKA.innerHTML = renderTKADoc(s, getNomorUrutSiswa(s));
 
+    const labelTN  = document.getElementById('adminTnLabel');
+    const contentTN = document.getElementById('adminTnContent');
+    if (labelTN)  labelTN.textContent  = `${s.nama} — Kelas ${s.kelas}`;
+    if (contentTN) contentTN.innerHTML = renderTN(s, getNomorUrutSiswa(s));
+
     adminNavUpdateUI();
     renderAdminTable();
 }
 
 window.adminNavSetKelas = function(kelas) {
-    ['adminSknFilterKelas', 'adminSklFilterKelas', 'adminTkaFilterKelas'].forEach(id => {
+    ['adminSknFilterKelas', 'adminSklFilterKelas', 'adminTkaFilterKelas', 'adminTnFilterKelas'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = kelas;
     });
@@ -1091,10 +1270,13 @@ window.renderAdminTable = function() {
             <td><code style="font-size:0.82rem; color:#5a8a84;">${s.nis || '-'}</code></td>
             <td style="font-weight:${isActive ? '700' : '500'}; color:${isActive ? '#0D3B36' : 'inherit'};">${s.nama || '-'}</td>
             <td><span style="background:#eef6f2; color:#147A73; padding:2px 9px; border-radius:6px; font-size:0.77rem; font-weight:600;">${s.kelas || '-'}</span></td>
-            <td style="text-align:center;">
-                <button class="admin-action-btn btn-skn" onclick="adminViewSKN(${idx})">SKN</button>
-                <button class="admin-action-btn btn-skl" onclick="adminViewSKL(${idx})">SKL</button>
-                <button class="admin-action-btn btn-tka" onclick="adminViewTKA(${idx})">TKA</button>
+            <td>
+                <div class="admin-row-actions">
+                    <button class="admin-action-btn btn-skn" onclick="adminViewSKN(${idx})">SKN</button>
+                    <button class="admin-action-btn btn-skl" onclick="adminViewSKL(${idx})">SKL</button>
+                    <button class="admin-action-btn btn-tka" onclick="adminViewTKA(${idx})">TKA</button>
+                    <button class="admin-action-btn btn-tn" onclick="adminViewTN(${idx})">TN</button>
+                </div>
             </td>
         </tr>`;
     }).join('');
@@ -1106,7 +1288,7 @@ function adminNavSyncToStudent(idx, tabName) {
 
     if (pos < 0) {
         // Siswa tidak ada di filter saat ini — reset ke semua kelas
-        ['adminSknFilterKelas', 'adminSklFilterKelas', 'adminTkaFilterKelas'].forEach(id => {
+        ['adminSknFilterKelas', 'adminSklFilterKelas', 'adminTkaFilterKelas', 'adminTnFilterKelas'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = '';
         });
@@ -1116,7 +1298,7 @@ function adminNavSyncToStudent(idx, tabName) {
 
     if (pos >= 0) adminNavPos = pos;
     adminNavRender();
-    const tabBtnIdx = { skn: 1, skl: 2, tka: 3 }[tabName] || 1;
+    const tabBtnIdx = { skn: 1, skl: 2, tka: 3, tn: 4 }[tabName] || 1;
     switchAdminTab(tabName, document.querySelectorAll('#adminTabNav .tab-btn')[tabBtnIdx]);
     window.scrollTo(0, 0);
 }
@@ -1131,12 +1313,33 @@ window.adminViewSKL = function(idx) {
     adminNavSyncToStudent(idx, 'skl');
 };
 
+window.adminViewTN = function(idx) {
+    if (!globalDataSiswa[idx]) return;
+    adminNavSyncToStudent(idx, 'tn');
+};
+
 window.switchAdminTab = function(tabName, btn) {
     document.querySelectorAll('#adminTabNav .tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('#adminSection .tab-content').forEach(t => t.classList.remove('active'));
     if (btn) btn.classList.add('active');
-    const map = { daftar: 'adminTabDaftar', skn: 'adminTabSkn', skl: 'adminTabSkl', tka: 'adminTabTka' };
+    const map = { daftar: 'adminTabDaftar', skn: 'adminTabSkn', skl: 'adminTabSkl', tka: 'adminTabTka', tn: 'adminTabTn' };
     if (map[tabName]) document.getElementById(map[tabName]).classList.add('active');
+};
+
+/**
+ * Set tanggal Transkrip Nilai dari panel admin lalu render ulang
+ * @param {string} which - 'kelulusan' atau 'ttd'
+ * @param {string} value - tanggal format YYYY-MM-DD
+ */
+window.setTnTanggal = function(which, value) {
+    if (!value) return;
+    if (which === 'kelulusan') tnTanggalKelulusan = value;
+    else if (which === 'ttd')  tnTanggalTtd = value;
+    // Render ulang TN yang sedang tampil (admin) & siswa bila ada
+    const contentTN = document.getElementById('adminTnContent');
+    const s = adminNavFiltered[adminNavPos];
+    if (contentTN && s) contentTN.innerHTML = renderTN(s, getNomorUrutSiswa(s));
+    if (document.getElementById('tnContent') && currentStudent) updateTN();
 };
 
 function updateAdminTKA() {
@@ -1335,6 +1538,7 @@ window.cetakBatchAdmin = function(type) {
         let doc;
         if (type === 'skn')      doc = renderSKN(s, getNomorUrutSiswa(s));
         else if (type === 'skl') doc = renderSKL(s, getNomorUrutSiswa(s));
+        else if (type === 'tn')  doc = renderTN(s, getNomorUrutSiswa(s));
         else                     doc = renderTKADoc(s, getNomorUrutSiswa(s));
         return `<div class="batch-page">${doc}</div>`;
     }).join('');
