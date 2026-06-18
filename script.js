@@ -629,7 +629,11 @@ function renderTN(student, nomorUrut = 1) {
         return "<div style='text-align:center; padding:40px;'>Data tidak ditemukan</div>";
     }
 
-    const nomorTN = `400.3.11/SMPABBS-TN-${String(nomorUrut).padStart(3, '0')}/2026`;
+    // Nomor transkrip diambil dari kolom "Nomor Transkrip" di spreadsheet;
+    // bila kosong, jatuh ke nomor otomatis agar tidak pernah blank.
+    const nomorTN = (student.nomorTranskrip && String(student.nomorTranskrip).trim())
+        ? student.nomorTranskrip
+        : `400.3.11/SMPABBS-TN-${String(nomorUrut).padStart(3, '0')}/2026`;
     const tglKelulusan = formatTanggalIndonesia(tnTanggalKelulusan);
     const tglTtd       = formatTanggalIndonesia(tnTanggalTtd);
 
