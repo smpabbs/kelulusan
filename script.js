@@ -391,7 +391,7 @@ function renderSKN(student, nomorUrut = 1) {
 
             <p style="font-size:11pt; margin-bottom:5px;">Yang bertanda tangan di bawah ini :</p>
             <table class="tbl-bio">
-                <tr><td width="30%">Nama</td><td>:</td><td><strong>Tri Wijayanti, M.Pd</strong></td></tr>
+                <tr><td width="30%">Nama</td><td>:</td><td><strong>Tri Wijayanti, S.Pd, M.Pd</strong></td></tr>
                 <tr><td>Jabatan</td><td>:</td><td>Kepala SMP ABBS Surakarta</td></tr>
                 <tr><td>NPSN</td><td>:</td><td>70040216</td></tr>
             </table>
@@ -430,7 +430,7 @@ function renderSKN(student, nomorUrut = 1) {
                     <div>Kota Surakarta, ${tanggalSurat}</div>
                     <div>Kepala Sekolah,</div>
                     <div class="ttd-gap"></div>
-                    <div><strong style="text-decoration:underline;">TRI WIJAYANTI, M.Pd</strong></div>
+                    <div><strong style="text-decoration:underline;">TRI WIJAYANTI, S.Pd, M.Pd</strong></div>
                     <div>NIP. -</div>
                 </div>
             </div>
@@ -598,7 +598,7 @@ function renderSKL(student, nomorUrut = 1) {
                         <div>Kota Surakarta, ${tanggalSKL}</div>
                         <div>Kepala Sekolah,</div>
                         <div class="ttd-gap"></div>
-                        <div><strong style="text-decoration:underline;">TRI WIJAYANTI, M.Pd</strong></div>
+                        <div><strong style="text-decoration:underline;">TRI WIJAYANTI, S.Pd, M.Pd</strong></div>
                         <div>NIP. -</div>
                     </div>
                 </div>
@@ -753,7 +753,7 @@ function renderTN(student, nomorUrut = 1) {
                         <div>Kota Surakarta, ${tglTtd}</div>
                         <div>Kepala Sekolah,</div>
                         <div style="height:34pt;"></div>
-                        <div><strong style="text-decoration:underline;">TRI WIJAYANTI, M.Pd</strong></div>
+                        <div><strong style="text-decoration:underline;">TRI WIJAYANTI, S.Pd, M.Pd</strong></div>
                         <div>NIP. -</div>
                     </div>
                 </div>
@@ -1519,7 +1519,7 @@ function renderTKADoc(student, nomorUrut = 1) {
                         <div>Surakarta, ${tanggalSurat}</div>
                         <div>Kepala SMP ABBS Surakarta</div>
                         <div style="height:28pt;"></div>
-                        <div><strong><u>Tri Wijayanti, M.Pd</u></strong></div>
+                        <div><strong><u>Tri Wijayanti, S.Pd, M.Pd</u></strong></div>
                         <div>NIP. -</div>
                     </div>
                 </div>
